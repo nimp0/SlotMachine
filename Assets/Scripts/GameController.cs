@@ -35,107 +35,48 @@ public class GameController : MonoBehaviour
 
     public IEnumerator Movement()
     {
-        StartCoroutine("LeftMove");
+        StartCoroutine(MoveReels(0));
         yield return new WaitForSeconds(1f);
-        StartCoroutine("MidMove");
+        StartCoroutine(MoveReels(1));
         yield return new WaitForSeconds(1f);
-        StartCoroutine("RightMove");
+        StartCoroutine(MoveReels(2));
         yield return new WaitForSeconds(1f);
-    }
-    
-    public IEnumerator LeftMove()
-    {
-        speed = 1f;
-        isRunning = true;
-        timeRunning = 40f;
+	}
 
-        float deltaTime = Time.deltaTime * speed;
+	public IEnumerator MoveReels(int order)
+	{
+		speed = 1f;
+		isRunning = true;
+		timeRunning = 10;
 
-        while (timeRunning > 0)
-        {
-            foreach (int index in Enumerable.Range(5, 5))
-            {
-                Vector2 startPos = new Vector2(sprites[index].transform.position.x, sprites[index].transform.position.y);
-                Vector2 endPos = new Vector2(sprites[index].transform.position.x, -20);
-                float distance = Vector2.Distance(startPos, endPos);
-                //float distance = -movementVector.y;
-                //float currTimeRunning = timeRunning - deltaTime * 0.01f;
-                //float currDistance = distance - (deltaTime * 0.01f);
-                //t = currTimeRunning * deltaTime / currDistance;
-                float t = timeRunning * deltaTime / distance;
-                sprites[index].transform.position = Vector2.Lerp(startPos, endPos, t);
-                //sprites[index].transform.Translate(movementVector * deltaTime * t);
-            }
-            Teleport();
-            timeRunning -= deltaTime;
-            yield return new WaitForSeconds(deltaTime * 0.01f);
-        }
-        //isRunning = false;
-        RoundUpThePositionValue();
-    }
+		float deltaTime = Time.deltaTime * speed;
 
-    public IEnumerator MidMove()
-    {
-        speed = 1f;
-        //isRunning = true;
-        timeRunning = 40f;
+		while(timeRunning > 0)
+		{
+			foreach(int index in Enumerable.Range(order * 5, 5))
+			{
+				Transform sprite = sprites[index];
 
-        float deltaTime = Time.deltaTime * speed;
+				sprite.Translate(-Vector2.up);
 
-        while (timeRunning > 0)
-        {
-            foreach (int index in Enumerable.Range(0, 5))
-            {
-                Vector2 startPos = new Vector2(sprites[index].transform.position.x, sprites[index].transform.position.y);
-                Vector2 endPos = new Vector2(sprites[index].transform.position.x, -20);
-                float distance = Vector2.Distance(startPos, endPos);
-                //float distance = -movementVector.y;
-                //float currTimeRunning = timeRunning - deltaTime * 0.01f;
-                //float currDistance = distance - (deltaTime * 0.01f);
-                //t = currTimeRunning * deltaTime / currDistance;
-                float t = timeRunning * deltaTime / distance;
-                sprites[index].transform.position = Vector2.Lerp(startPos, endPos, t);
-                //sprites[index].transform.Translate(movementVector * deltaTime * t);
-            }
-            Teleport();
-            timeRunning -= deltaTime;
-            yield return new WaitForSeconds(deltaTime * 0.01f);
-        }
-        //isRunning = false;
-        RoundUpThePositionValue();
-
-    }
-
-    public IEnumerator RightMove()
-    {
-        speed = 1f;
-        //isRunning = true;
-        timeRunning = 40f;
-
-        float deltaTime = Time.deltaTime * speed;
-
-        while (timeRunning > 0)
-        {
-            foreach (int index in Enumerable.Range(10, 5))
-            {
-                Vector2 startPos = new Vector2(sprites[index].transform.position.x, sprites[index].transform.position.y);
-                Vector2 endPos = new Vector2(sprites[index].transform.position.x, -20);
-                float distance = Vector2.Distance(startPos, endPos);
-                //float distance = -movementVector.y;
-                //float currTimeRunning = timeRunning - deltaTime * 0.01f;
-                //float currDistance = distance - (deltaTime * 0.01f);
-                //t = currTimeRunning * deltaTime / currDistance;
-                float t = timeRunning * deltaTime / distance;
-                sprites[index].transform.position = Vector2.Lerp(startPos, endPos, t);
-                //sprites[index].transform.Translate(movementVector * deltaTime * t);
-            }
-            Teleport();
-            timeRunning -= deltaTime;
-            yield return new WaitForSeconds(deltaTime * 0.01f);
-        }
-        isRunning = false;
-        RoundUpThePositionValue();
-    }
+				Vector2 startPos = new Vector2(sprites[index].position.x, sprites[index].transform.position.y);
+				Vector2 endPos = new Vector2(sprites[index].transform.position.x, -20);
+				float distance = Vector2.Distance(startPos, endPos);
+				//float distance = -movementVector.y;
+				//float currTimeRunning = timeRunning - deltaTime * 0.01f;
+				//float currDistance = distance - (deltaTime * 0.01f);
+				//t = currTimeRunning * deltaTime / currDistance;
+				float t = timeRunning * deltaTime / distance;
+				sprites[index].transform.position = Vector2.Lerp(startPos, endPos, t);
+				//sprites[index].transform.Translate(movementVector * deltaTime * t);
+			}
+			Teleport();
+			timeRunning -= deltaTime;
+			yield return new WaitForSeconds(deltaTime * 0.01f);
+		}
+		//isRunning = false;
+		RoundUpThePositionValue();
+	}
 
     public void Teleport()
     {
