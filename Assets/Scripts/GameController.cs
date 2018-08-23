@@ -6,10 +6,10 @@ using System.Linq;
 public class GameController : MonoBehaviour
 {
     public GameObject[] pictures = new GameObject[15];
-    private List<Transform> sprites = new List<Transform>();
+    public List<Transform> sprites = new List<Transform>();
+    private float[] startPositionsOfSpritesY = new float[15] { 0, -2, -4, -6, -8, 0, -2, -4, -6, -8, 0, -2, -4, -6, -8 };
     public bool isRunning;
-    public float timeRunning;
-    public float speed;
+    public float t;
 
     public void Awake()
     {
@@ -42,54 +42,40 @@ public class GameController : MonoBehaviour
         StartCoroutine(MoveReels(2));
         yield return new WaitForSeconds(1f);
 	}
-
+   
 	public IEnumerator MoveReels(int order)
 	{
-		speed = 1f;
 		isRunning = true;
-		timeRunning = 10;
+        t = 0;
 
-		float deltaTime = Time.deltaTime * speed;
-
-		while(timeRunning > 0)
+        while (t < 1)
 		{
-			foreach(int index in Enumerable.Range(order * 5, 5))
-			{
-				Transform sprite = sprites[index];
+            float c = 0.5f;
+            if (t > c)
+            {
+                float t1 = Mathf.Sqrt((1 - t) * (1 / c)) * Time.deltaTime / 10;
+                t += t1;
+            }
+            else
+            {
+                t += Time.deltaTime / 10;
+            }
 
-				sprite.Translate(-Vector2.up);
+            foreach (int index in Enumerable.Range(order * 5, 5))
+            {
+                Vector2 startPos = new Vector2(sprites[index].position.x, startPositionsOfSpritesY[index]);
+                Vector2 endPos = new Vector2(sprites[index].position.x, startPositionsOfSpritesY[index] - 100);
+                sprites[index].transform.position = Vector2.Lerp(startPos, endPos, t);
 
-				Vector2 startPos = new Vector2(sprites[index].position.x, sprites[index].transform.position.y);
-				Vector2 endPos = new Vector2(sprites[index].transform.position.x, -20);
-				float distance = Vector2.Distance(startPos, endPos);
-				//float distance = -movementVector.y;
-				//float currTimeRunning = timeRunning - deltaTime * 0.01f;
-				//float currDistance = distance - (deltaTime * 0.01f);
-				//t = currTimeRunning * deltaTime / currDistance;
-				float t = timeRunning * deltaTime / distance;
-				sprites[index].transform.position = Vector2.Lerp(startPos, endPos, t);
-				//sprites[index].transform.Translate(movementVector * deltaTime * t);
-			}
-			Teleport();
-			timeRunning -= deltaTime;
-			yield return new WaitForSeconds(deltaTime * 0.01f);
+                Vector2 fakePos = sprites[index].transform.position;
+                fakePos.y %= 10;
+                sprites[index].transform.position = fakePos;
+            }
+			yield return new WaitForSeconds(0.01f);
 		}
-		//isRunning = false;
+		isRunning = false;
 		RoundUpThePositionValue();
 	}
-
-    public void Teleport()
-    {
-        for (int j = 0; j < sprites.Count; j++)
-        {
-            if (sprites[j].transform.position.y <= -6f)
-            {
-                Vector2 currentPosition = sprites[j].transform.position;
-                currentPosition.y = (currentPosition.y + 10f);
-                sprites[j].transform.position = currentPosition;
-            }
-        }
-    }
 
     public void RoundUpThePositionValue()
     {
