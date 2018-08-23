@@ -28,7 +28,6 @@ public class GameController : MonoBehaviour
 
         else
         {
-
             StartCoroutine("Movement");
         }
     }
@@ -41,15 +40,15 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         StartCoroutine(MoveReels(2));
         yield return new WaitForSeconds(1f);
-	}
-   
-	public IEnumerator MoveReels(int order)
-	{
-		isRunning = true;
+    }
+
+    public IEnumerator MoveReels(int order)
+    {
+        isRunning = true;
         t = 0;
 
         while (t < 1)
-		{
+        {
             float c = 0.5f;
             if (t > c)
             {
@@ -71,11 +70,11 @@ public class GameController : MonoBehaviour
                 fakePos.y %= 10;
                 sprites[index].transform.position = fakePos;
             }
-			yield return new WaitForSeconds(0.01f);
-		}
-		isRunning = false;
-		RoundUpThePositionValue();
-	}
+            yield return new WaitForSeconds(0.01f);
+        }
+        isRunning = false;
+        RoundUpThePositionValue();
+    }
 
     public void RoundUpThePositionValue()
     {
@@ -83,15 +82,7 @@ public class GameController : MonoBehaviour
         {
             float missalignedY = sprites[j].transform.position.y;
             float alignedY = Mathf.RoundToInt(missalignedY);
-            if (alignedY % 2 != 0)
-            {
-                sprites[j].transform.position = new Vector3(sprites[j].transform.position.x, alignedY - 1, sprites[j].transform.position.z);
-            }
-
-            else
-            {
-                sprites[j].transform.position = new Vector3(sprites[j].transform.position.x, alignedY, sprites[j].transform.position.z);
-            }
+            sprites[j].transform.position = new Vector3(sprites[j].transform.position.x, alignedY, sprites[j].transform.position.z);
         }
     }
 }
