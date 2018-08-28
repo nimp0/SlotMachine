@@ -604,26 +604,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168705562a4178745894820da09ccc36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pictures:
+  picturesL:
   - {fileID: 241833266}
   - {fileID: 261965193}
   - {fileID: 1743333523}
   - {fileID: 1797732226}
   - {fileID: 1799271633}
+  picturesM:
   - {fileID: 828342609}
   - {fileID: 1914439376}
   - {fileID: 1118353050}
   - {fileID: 2112703467}
   - {fileID: 285884763}
+  picturesR:
   - {fileID: 1025615011}
   - {fileID: 1513928916}
   - {fileID: 1352110994}
   - {fileID: 1567505705}
   - {fileID: 1205077469}
-  sprites: []
   isRunning: 0
-  t: 0
-  yEndPosition: 0
+  t1: 0
+  t2: 0
+  t3: 0
+  yEndPositionLeft: 0
+  yEndPositionMid: 0
+  yEndPositionRight: 0
 --- !u!4 &972793922
 Transform:
   m_ObjectHideFlags: 0
@@ -8219,7 +8224,7 @@ Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: pb_Mesh14626
+  m_Name: pb_Mesh3932
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
