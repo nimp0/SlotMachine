@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4955932264416414}
   - component: {fileID: 212515091502142958}
   m_Layer: 0
-  m_Name: LeftWatermelon
+  m_Name: 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
