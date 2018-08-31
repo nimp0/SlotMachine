@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour
 {
     public List<List<Transform>> sprites;
     public float[] tParameters;
+    public float[] xParameters;
     public bool isRunning;
 
     public int multiplier = 20;
@@ -39,12 +40,14 @@ public class GameController : MonoBehaviour
 
         yStartPositions = new float[amountOfSprites];
 
-        for(int i = 0; i < amountOfRows; i++)
+        for (int i = 0; i < amountOfRows; i++)
         {
             tParameters = new float[amountOfRows];
+            xParameters = new float[amountOfRows];
         }
 
         SetSprites();
+        
     }
 
     public void StartMoveCoroutine()
@@ -65,6 +68,7 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < amountOfRows; i++)
         {
             tParameters[i] = 0;
+            xParameters[i] = 0;
             StartCoroutine(MoveReelByIndex(i));
             yield return new WaitForSeconds(.2f);
         }
@@ -75,15 +79,16 @@ public class GameController : MonoBehaviour
         isRunning = true;
 
         List<Transform> row = sprites[index];
-        float yEndPosition = -(Random.Range(0, amountOfSprites) * 2 + amountOfSprites * 20);
+        yEndPosition = -(Random.Range(0, amountOfSprites) * 2 + amountOfSprites * 20);
         float t = tParameters[index];
+        float x = xParameters[index];
 
-        while (t < 1)
+        while (t < 1 || x < 1)
         {
             float speed = .5f;
             float delta = 0.01f;
             float c1 = 0.5f;
-
+           
             if (t > c1)
             {
                 float tNext = Mathf.Sqrt((1 - t) * (1 / c1)) * delta * speed;
@@ -91,7 +96,7 @@ public class GameController : MonoBehaviour
             }
             else if (t < c1)
             {
-                float tNext = Mathf.Sqrt((.01f + t) * (1 / c1)) * delta * speed * speed;
+                float tNext = Mathf.Sqrt((0.01f + t) * (1 / c1)) * delta * speed * speed;
                 t += tNext;
             }
             else
@@ -104,22 +109,34 @@ public class GameController : MonoBehaviour
                 t = 1;
             }
 
+            if (t > 0.95f && x < 1 )
+            {
+                float xNext = Mathf.Sqrt(1 - x) * delta;
+                x += xNext;
+            }
+            if (x >= 1)
+            {
+                x = 1;
+            }
+
             for (int i = 0; i < row.Count; i++)
             {
                 Vector3 startPos = new Vector3(row[i].position.x, yStartPositions[i], row[i].position.z);
                 Vector3 endPos = new Vector3(row[i].position.x, yStartPositions[i] + yEndPosition, row[i].position.z);
                 row[i].position = Vector3.Lerp(startPos, endPos, t);
+                row[i].position += new Vector3(0, -1f, 0) * Mathf.Sin(x * Mathf.PI);
                 Vector3 fakePos = row[i].position;
                 fakePos.y %= amountOfSprites * 2;
                 row[i].position = fakePos;
             }
             tParameters[index] = t;
+            xParameters[index] = x;
             yield return new WaitForSeconds(0.01f);
         }
-
         tParameters[index] = t;
+        xParameters[index] = x;
         isRunning = false;
-        //RoundUpThePositionValueOfRows();
+        RoundUpThePositionValueOfRows();
     }
 
     void RoundUpThePositionValueOfRows()
