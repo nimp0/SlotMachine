@@ -9,7 +9,8 @@ public class GameController : MonoBehaviour
     public float[] xParameters;
     public bool isRunning;
 
-    public int multiplier = 20;
+    public int multiplier;
+    
     int amountOfRows = 3;
     int amountOfSprites = 15;
     int amountOfLoadedSprites = 5;
@@ -20,8 +21,14 @@ public class GameController : MonoBehaviour
 
     public void Awake()
     {
-        amountOfSprites *= multiplier;
+        //amountOfSprites *= multiplier;
         amountOfRows *= multiplier;
+
+        if (multiplier>1)
+        {
+            amountOfRows--;
+        }
+        
         probabilities = new int[amountOfRows][];
 
         for (int i = 0; i < amountOfRows; i++)
@@ -70,7 +77,7 @@ public class GameController : MonoBehaviour
             tParameters[i] = 0;
             xParameters[i] = 0;
             StartCoroutine(MoveReelByIndex(i));
-            yield return new WaitForSeconds(.2f);
+            yield return new WaitForSeconds(1f);
         }
     }
 
@@ -79,7 +86,8 @@ public class GameController : MonoBehaviour
         isRunning = true;
 
         List<Transform> row = sprites[index];
-        yEndPosition = -(Random.Range(0, amountOfSprites) * 2 + amountOfSprites * 20);
+        Transform sprite = row[index];
+        yEndPosition = -(Random.Range(0, amountOfSprites) * 3 + amountOfSprites * 20);
         float t = tParameters[index];
         float x = xParameters[index];
 
@@ -111,7 +119,7 @@ public class GameController : MonoBehaviour
 
             if (t > 0.95f && x < 1 )
             {
-                float xNext = Mathf.Sqrt(1 - x) * delta;
+                float xNext = Mathf.Sqrt(1 - x) * delta * 2;
                 x += xNext;
             }
             if (x >= 1)
@@ -124,10 +132,25 @@ public class GameController : MonoBehaviour
                 Vector3 startPos = new Vector3(row[i].position.x, yStartPositions[i], row[i].position.z);
                 Vector3 endPos = new Vector3(row[i].position.x, yStartPositions[i] + yEndPosition, row[i].position.z);
                 row[i].position = Vector3.Lerp(startPos, endPos, t);
-                row[i].position += new Vector3(0, -1f, 0) * Mathf.Sin(x * Mathf.PI);
+                row[i].position += Vector3.down * 3 * Mathf.Sin(x * Mathf.PI);
                 Vector3 fakePos = row[i].position;
-                fakePos.y %= amountOfSprites * 2;
+                fakePos.y %= amountOfSprites * 3;
                 row[i].position = fakePos;
+
+                /*float hidedZ = sprite.position.z;
+                for (int j = 0; j < amountOfSprites; j++)
+                {
+                    if (sprite.position.y <= -19.2 && sprite.position.y >= 11.15)
+                    {
+                        hidedZ = sprite.position.z;
+                    }
+
+                    else
+                    {
+                        hidedZ += 11;
+                    }
+                    //sprite.position.z = hidedZ;
+                }*/
             }
             tParameters[index] = t;
             xParameters[index] = x;
@@ -136,7 +159,7 @@ public class GameController : MonoBehaviour
         tParameters[index] = t;
         xParameters[index] = x;
         isRunning = false;
-        RoundUpThePositionValueOfRows();
+        //RoundUpThePositionValueOfRows();
     }
 
     void RoundUpThePositionValueOfRows()
@@ -149,7 +172,7 @@ public class GameController : MonoBehaviour
             {
                 float missalignedY = row[j].position.y;
                 float alignedY = Mathf.RoundToInt(missalignedY);
-                alignedY += alignedY % 2;
+                //alignedY += alignedY % 2;
                 row[j].position = new Vector3(row[j].position.x, alignedY, row[j].position.z);
             }
         }
@@ -195,7 +218,7 @@ public class GameController : MonoBehaviour
             for (int j = 0; j < amountOfSprites; j++)
             {
                 Transform sprite = row[j];
-                sprite.position = new Vector3(i * 2, -j * 2, 10);
+                sprite.position = new Vector3(i * 2, -j * 3, 10);
                 yStartPositions[j] = sprite.position.y;
             }
         }
