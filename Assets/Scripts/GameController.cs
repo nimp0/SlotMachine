@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public List<List<Transform>> sprites;
+    public GameObject loadedSprite;
     public float[] tParameters;
     public float[] xParameters;
     public bool isRunning;
@@ -54,7 +55,6 @@ public class GameController : MonoBehaviour
         }
 
         SetSprites();
-        
     }
 
     public void StartMoveCoroutine()
@@ -136,21 +136,6 @@ public class GameController : MonoBehaviour
                 Vector3 fakePos = row[i].position;
                 fakePos.y %= amountOfSprites * 3;
                 row[i].position = fakePos;
-
-                /*float hidedZ = sprite.position.z;
-                for (int j = 0; j < amountOfSprites; j++)
-                {
-                    if (sprite.position.y <= -19.2 && sprite.position.y >= 11.15)
-                    {
-                        hidedZ = sprite.position.z;
-                    }
-
-                    else
-                    {
-                        hidedZ += 11;
-                    }
-                    //sprite.position.z = hidedZ;
-                }*/
             }
             tParameters[index] = t;
             xParameters[index] = x;
@@ -184,7 +169,7 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i < amountOfLoadedSprites; i++)
         {
-            GameObject loadedSprite = Resources.Load("Prefabs/" + i.ToString()) as GameObject;
+            loadedSprite = Resources.Load("Prefabs/" + i.ToString()) as GameObject;
             spritesFromResources.Add(loadedSprite);
         }
 
