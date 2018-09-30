@@ -8184,7 +8184,7 @@ GameObject:
   - component: {fileID: 2110996368}
   - component: {fileID: 2110996367}
   m_Layer: 0
-  m_Name: Background
+  m_Name: dice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

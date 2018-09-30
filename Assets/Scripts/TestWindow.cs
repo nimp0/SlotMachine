@@ -7,10 +7,12 @@ using System.Collections.Generic;
 
 public class TestWindow : EditorWindow
 {
-    Sprite sprite;
+    Sprite spriteToRender;
     IEnumerable<GameObject> filteredObjects;
     List<string> distinctiveNames;
-    
+    Sprite loadedSprite;
+    new string name;
+
 
     [MenuItem("Window/SpriteDetecter")]
 
@@ -21,10 +23,13 @@ public class TestWindow : EditorWindow
 
     void OnGUI()
     {
+        
         if (GUILayout.Button("CheckSprites"))
         {
             CheckMissingSprites();
         }
+
+        loadedSprite = Resources.Load("Sprites/" + name, typeof(Sprite)) as Sprite;
 
         if (GUILayout.Button("SetSprites"))
         {
@@ -40,38 +45,40 @@ public class TestWindow : EditorWindow
         {
             Debug.Log("Select Game Objects!");
         }
-
         Func<GameObject, bool> predicate = obj =>
         {
-            sprite = obj.GetComponent<SpriteRenderer>().sprite;
-            bool result = sprite == null;
+            spriteToRender = obj.GetComponent<SpriteRenderer>().sprite;
+            bool result = spriteToRender == null;
             return result;
         };
 
         filteredObjects = Selection.gameObjects.Where(predicate);
-
-      
-        distinctiveNames = filteredObjects.Select(r => r.name).Distinct().ToList();
+        distinctiveNames = filteredObjects.Select(o => o.name).Distinct().ToList();
 
         foreach (var name in distinctiveNames)
         {
             Debug.Log(name + " " + "has missing Sprite");
         }
-
-        /*foreach (var item in filteredObjects)
-        {
-            Debug.Log(item.name + " " + "has missing Sprite");
-        }*/
     }
-
+   
     void SetCorrectSprites()
     {
-        foreach (var filteredObject in filteredObjects)
+        filteredObjects.Where(o => o.GetComponent <SpriteRenderer>() != null).ToList().ForEach(o => o.GetComponent<SpriteRenderer>().sprite = loadedSprite);
+        /*foreach (var item in filteredObjects)
         {
-            sprite = filteredObject.GetComponent<SpriteRenderer>().sprite;
-            sprite = Resources.Load<Sprite>("Pictures/background") as Sprite;
-        }
+            name = item.name;
+            SpriteRenderer renderer = item.GetComponent<SpriteRenderer>();
+            if (renderer != null)
+            {
+                renderer.sprite = loadedSprite;
+            }
+        }*/
     }
+    
+        
+    
+    
+
 }
 
     
