@@ -7,12 +7,10 @@ using System.Collections.Generic;
 
 public class TestWindow : EditorWindow
 {
-    Sprite spriteToRender;
-    IEnumerable<GameObject> filteredObjects;
-    List<string> distinctiveNames;
-    Sprite loadedSprite;
-    new string name;
-
+    private Sprite spriteToRender;
+    private IEnumerable<GameObject> filteredObjects;
+    private List<string> distinctiveNames;
+    private Sprite loadedSprite;
 
     [MenuItem("Window/SpriteDetecter")]
 
@@ -21,23 +19,34 @@ public class TestWindow : EditorWindow
         GetWindow<TestWindow>("SpriteDetecter");
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
-        
         if (GUILayout.Button("CheckSprites"))
         {
             CheckMissingSprites();
         }
 
-        loadedSprite = Resources.Load("Sprites/" + name, typeof(Sprite)) as Sprite;
-
         if (GUILayout.Button("SetSprites"))
         {
-            SetCorrectSprites();
+            foreach (var item in Selection.gameObjects)
+            {
+                loadedSprite = Resources.Load("Sprites/" + item.name, typeof(Sprite)) as Sprite;
+                SpriteRenderer renderer = item.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sprite = loadedSprite;
+                }
+            }
+            //Selection.gameObjects.Where(o => o.GetComponent<SpriteRenderer>() != null).ToList().ForEach(o => o.GetComponent<SpriteRenderer>().sprite = loadedSprite);
+        }
+
+        if (GUILayout.Button("DeleteSprites"))
+        {
+            Selection.gameObjects.Where(o => o.GetComponent<SpriteRenderer>() != null).ToList().ForEach(o => o.GetComponent<SpriteRenderer>().sprite = null);
         }
     }
 
-    void CheckMissingSprites()
+    private void CheckMissingSprites()
     {
         bool isEmpty = !Selection.gameObjects.Any();
 
@@ -45,35 +54,28 @@ public class TestWindow : EditorWindow
         {
             Debug.Log("Select Game Objects!");
         }
+        
+       
         Func<GameObject, bool> predicate = obj =>
         {
             spriteToRender = obj.GetComponent<SpriteRenderer>().sprite;
             bool result = spriteToRender == null;
+            if (spriteToRender != null)
+            {
+                Debug.Log("All sprites are given");
+            }
             return result;
         };
 
         filteredObjects = Selection.gameObjects.Where(predicate);
         distinctiveNames = filteredObjects.Select(o => o.name).Distinct().ToList();
 
-        foreach (var name in distinctiveNames)
+        foreach (var distinctiveName in distinctiveNames)
         {
-            Debug.Log(name + " " + "has missing Sprite");
+            Debug.Log(distinctiveName + " " + "has missing Sprite");
         }
     }
-   
-    void SetCorrectSprites()
-    {
-        filteredObjects.Where(o => o.GetComponent <SpriteRenderer>() != null).ToList().ForEach(o => o.GetComponent<SpriteRenderer>().sprite = loadedSprite);
-        /*foreach (var item in filteredObjects)
-        {
-            name = item.name;
-            SpriteRenderer renderer = item.GetComponent<SpriteRenderer>();
-            if (renderer != null)
-            {
-                renderer.sprite = loadedSprite;
-            }
-        }*/
-    }
+
     
         
     

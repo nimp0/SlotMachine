@@ -147,7 +147,7 @@ public class GameController : MonoBehaviour
         //RoundUpThePositionValueOfRows();
     }
 
-    void RoundUpThePositionValueOfRows()
+    /*void RoundUpThePositionValueOfRows()
     {
         for (int i = 0; i < sprites.Count; i++)
         {
@@ -161,7 +161,7 @@ public class GameController : MonoBehaviour
                 row[j].position = new Vector3(row[j].position.x, alignedY, row[j].position.z);
             }
         }
-    }
+    }*/
 
     void SetSprites()
     {
